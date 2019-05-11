@@ -27,6 +27,9 @@ mongoose.connect(
 )
 
 // =============== route here =============================
+app.get("/users", (req, res) => {
+  res.send("it should be get users")
+})
 
 // ===== Coffee
 app.post("/coffee", (req, res) => {
@@ -66,6 +69,5 @@ app.post("/users/register", (req, res) => {
 
 console.log("test")
 
-app.post("/users/login")
 // ======================================================
 app.listen(PORT, () => console.log(`app listening on port ${PORT}`))
