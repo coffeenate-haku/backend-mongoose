@@ -7,23 +7,44 @@ const mongoose = require("mongoose")
 const bodyParser = require("body-parser")
 const cors = require("cors")
 
-// models
-const User = require("./models/users")
-
 // parse data from front-end to backend
 app.use(bodyParser.json()) // parse application/json
 app.use(bodyParser.urlencoded({ extended: false })) // parse application/x-www-form-urlencoded
 app.use(cors())
 
+// models
+const User = require("./models/users")
+const Coffee = require("./models/coffee")
+
+mongoose.set("useCreateIndex", true)
+
+// Connected to database
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true }, () =>
-  console.log(`connected to MongoDB Atlas`)
+  console.log(`connected to database`)
 )
 
 // =============== route here =============================
-app.post("/register", (req, res) => {
+
+// ===== Coffee
+app.post("/coffee", (req, res) => {
+  new Coffee({
+    name: req.body.name,
+    type: req.body.type,
+    sweetnessLevel: req.body.sweetnessLevel,
+    flavors: req.body.flavors,
+    descriptions: req.body.descriptions
+  })
+    .save()
+    .then(coffee => res.send({ message: `Coffee entered`, data: coffee }))
+})
+
+// ======== users
+app.post("/users/register", (req, res) => {
   new User({
     name: req.body.name,
-    age: req.body.age
+    username: req.body.username,
+    email: req.body.email,
+    password: req.body.password
   })
     .save()
     .then(newUser => res.send({ message: `Data entered`, data: newUser }))
