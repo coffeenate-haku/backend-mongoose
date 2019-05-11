@@ -27,27 +27,35 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true }, () =>
 
 // ===== Coffee
 app.post("/coffee", (req, res) => {
-  new Coffee({
-    name: req.body.name,
-    type: req.body.type,
-    sweetnessLevel: req.body.sweetnessLevel,
-    flavors: req.body.flavors,
-    descriptions: req.body.descriptions
-  })
-    .save()
-    .then(coffee => res.send({ message: `Coffee entered`, data: coffee }))
+  try {
+    new Coffee({
+      name: req.body.name,
+      type: req.body.type,
+      sweetnessLevel: req.body.sweetnessLevel,
+      flavors: req.body.flavors,
+      descriptions: req.body.descriptions
+    })
+      .save()
+      .then(coffee => res.send({ message: `Coffee entered`, data: coffee }))
+  } catch (error) {
+    res.send(error)
+  }
 })
 
 // ======== users
 app.post("/users/register", (req, res) => {
-  new User({
-    name: req.body.name,
-    username: req.body.username,
-    email: req.body.email,
-    password: req.body.password
-  })
-    .save()
-    .then(newUser => res.send({ message: `Data entered`, data: newUser }))
+  try {
+    new User({
+      name: req.body.name,
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password
+    })
+      .save()
+      .then(newUser => res.send({ message: `Data entered`, data: newUser }))
+  } catch (error) {
+    res.send(error)
+  }
 })
 
 // ======================================================
