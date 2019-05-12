@@ -7,6 +7,7 @@ const mongoose = require("mongoose")
 const bodyParser = require("body-parser")
 const cors = require("cors")
 const bcrypt = require("bcryptjs")
+const jwt = require("jsonwebtoken")
 
 // parse data from front-end to backend
 app.use(bodyParser.json()) // parse application/json
@@ -14,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: false })) // parse application/x-www-f
 app.use(cors())
 
 // models
-const User = require("./models/users")
+const Users = require("./models/users")
 const Coffee = require("./models/coffee")
 
 mongoose.set("useCreateIndex", true) //this line of code is from mongoose documentation
@@ -67,7 +68,40 @@ app.post("/users/register", (req, res) => {
   }
 })
 
-console.log("test")
+app.post("/users/login", (req, res) => {
+  try {
+    //find user email in database
+    const userLogin = Users.findOne({
+      where: { email: req.body.email }
+    })
+
+    //if the user doesn't registered, give this respond
+    if (userLogin === null) {
+      return res.send("Your email is not registered")
+    }
+
+    // compare password from user input to password stored in database
+    const validPassword = bcrypt.compare(req.body.password, userLogin.password)
+    if (!validPassword) return res.send("Your password is not valid")
+
+    const token = jwt.sign(
+      {
+        id: userLogin.id,
+        email: userLogin.email
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    )
+
+    res.send({
+      message: "You are logged in",
+      token: token,
+      userID: userLogin.id
+    })
+  } catch (error) {
+    console.log(error)
+  }
+})
 
 // ======================================================
 app.listen(PORT, () => console.log(`app listening on port ${PORT}`))
