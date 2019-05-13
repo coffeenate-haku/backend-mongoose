@@ -22,7 +22,7 @@ mongoose.set("useCreateIndex", true) //this line of code is from mongoose docume
 
 // Connected to database
 mongoose.connect(
-  process.env.MONGODB_URI,
+  process.env.HEROKU_URI,
   { useNewUrlParser: true, useFindAndModify: false }, //this line of code is from mongoose documentation
   () => console.log(`connected to database`)
 )
@@ -71,33 +71,59 @@ app.post("/users/register", (req, res) => {
 app.post("/users/login", (req, res) => {
   try {
     //find user email in database
-    const userLogin = Users.findOne({
-      where: { email: req.body.email }
+    Users.find({ email: req.body.email }, (error, result) => {
+      try {
+        console.log
+        // if email isn't registered, send "your email is not registered"
+        if (result === null) return res.send("Your email is not registered")
+
+        // compare password from user input to password stored in database
+        const validPassword = bcrypt.compare(req.body.password, result.password)
+
+        if (!validPassword) return res.send("password is not valid")
+
+        const token = jwt.sign(
+          {
+            id: result.id,
+            email: result.email
+          },
+          process.env.JWT_SECRET,
+          { expiresIn: "7d" }
+        )
+
+        res.send({
+          message: "You are logged in",
+          token: token,
+          data: result
+        })
+      } catch {
+        res.send(error)
+      }
     })
 
-    //if the user doesn't registered, give this respond
-    if (userLogin === null) {
-      return res.send("Your email is not registered")
-    }
+    // //if the user doesn't registered, give this respond
+    // if (userLogin === null) {
+    //   return res.send("Your email is not registered")
+    // }
 
-    // compare password from user input to password stored in database
-    const validPassword = bcrypt.compare(req.body.password, userLogin.password)
-    if (!validPassword) return res.send("Your password is not valid")
+    // // compare password from user input to password stored in database
+    // const validPassword = bcrypt.compare(req.body.password, userLogin.password)
+    // if (!validPassword) return res.send("Your password is not valid")
 
-    const token = jwt.sign(
-      {
-        id: userLogin.id,
-        email: userLogin.email
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    )
+    // const token = jwt.sign(
+    //   {
+    //     id: userLogin.id,
+    //     email: userLogin.email
+    //   },
+    //   process.env.JWT_SECRET,
+    //   { expiresIn: "7d" }
+    // )
 
-    res.send({
-      message: "You are logged in",
-      token: token,
-      userID: userLogin.id
-    })
+    // res.send({
+    //   message: "You are logged in",
+    //   token: token,
+    //   userID: userLogin.id
+    // })
   } catch (error) {
     console.log(error)
   }
