@@ -1,5 +1,5 @@
 // This config is setup for mongoDB
-
+require("dotenv").config()
 const mongoose = require("mongoose")
 
 const MONGODB_URI =

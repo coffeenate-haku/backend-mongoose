@@ -5,7 +5,6 @@ const AutoIncrement = require("mongoose-sequence")(mongoose)
 //Define a Schema
 const UserSchema = new Schema(
   {
-    _id: Schema.Types.ObjectId,
     name: String,
     username: String,
     email: String,
@@ -22,6 +21,6 @@ UserSchema.plugin(AutoIncrement, {
 })
 
 // it will create a 'users' collection/model when user do registration
-const User = mongoose.model("user", UserSchema)
+const Users = mongoose.model("Users", UserSchema)
 
-module.exports = User
+module.exports = Users

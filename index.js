@@ -40,43 +40,5 @@ app.get("/users", (req, res) => {
   })
 })
 
-app.post("/users/login", (req, res) => {
-  try {
-    Users.findOne({ email: req.body.email }, async (error, result) => {
-      if (error) {
-        res.send(error)
-      } else {
-        if (result === null) return res.send("Your email is not registered")
-
-        const validPassword = await bcrypt.compare(
-          req.body.password,
-          result.password
-        )
-
-        if (!validPassword) {
-          return res.send("password is not valid")
-        } else {
-          const token = jwt.sign(
-            {
-              id: result.id,
-              email: result.email
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: "7d" }
-          )
-
-          res.send({
-            message: "You are logged in",
-            token: token,
-            user: result
-          })
-        }
-      }
-    })
-  } catch (error) {
-    console.log(error)
-  }
-})
-
 // ======================================================
 app.listen(PORT, () => console.log(`app listening on port ${PORT}`))
