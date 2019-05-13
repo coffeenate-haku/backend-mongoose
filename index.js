@@ -34,11 +34,11 @@ app.post("/coffee", (req, res) => {
 })
 
 // ======================================================= users
-app.get("/users", (req, res) => {
-  Users.find().then(response => {
-    res.send(response)
-  })
-})
+// app.get("/users", (req, res) => {
+//   Users.find().then(response => {
+//     res.send(response)
+//   })
+// })
 
 // ======================================================
 app.listen(PORT, () => console.log(`app listening on port ${PORT}`))

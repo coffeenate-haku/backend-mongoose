@@ -3,6 +3,13 @@ const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 
 const userControllers = {
+  // GET ALL USERS DATA
+  getAllUsers: (req, res) => {
+    Users.find().then(response => {
+      res.send(response)
+    })
+  },
+
   // USER REGISTRATION
 
   register: (req, res) => {
