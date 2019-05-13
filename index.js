@@ -72,28 +72,35 @@ app.post("/users/register", (req, res) => {
 
 app.post("/users/login", (req, res) => {
   try {
-    Users.find({ email: req.body.email }, (error, result) => {
+    Users.findOne({ email: req.body.email }, async (error, result) => {
       if (error) {
         res.send(error)
       } else {
-        const validPassword = bcrypt.compare(req.body.password, result.password)
+        if (result === null) return res.send("Your email is not registered")
 
-        if (!validPassword) return res.send("password is not valid")
-
-        const token = jwt.sign(
-          {
-            id: result.id,
-            email: result.email
-          },
-          process.env.JWT_SECRET,
-          { expiresIn: "7d" }
+        const validPassword = await bcrypt.compare(
+          req.body.password,
+          result.password
         )
 
-        res.send({
-          message: "You are logged in",
-          token: token,
-          user: result
-        })
+        if (!validPassword) {
+          return res.send("password is not valid")
+        } else {
+          const token = jwt.sign(
+            {
+              id: result.id,
+              email: result.email
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+          )
+
+          res.send({
+            message: "You are logged in",
+            token: token,
+            user: result
+          })
+        }
       }
     })
   } catch (error) {
