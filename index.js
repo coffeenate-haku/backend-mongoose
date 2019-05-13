@@ -22,7 +22,7 @@ mongoose.set("useCreateIndex", true) //this line of code is from mongoose docume
 
 // Connected to database
 mongoose.connect(
-  process.env.HEROKU_URI,
+  process.env.MONGODB_URI,
   { useNewUrlParser: true, useFindAndModify: false }, //this line of code is from mongoose documentation
   () => console.log(`connected to database`)
 )
