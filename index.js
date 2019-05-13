@@ -13,31 +13,29 @@ app.use(bodyParser.urlencoded({ extended: false })) // parse application/x-www-f
 app.use(cors())
 
 // =============== route here =============================
+// USERS ROUTE
 const userRoutes = require("./routes/usersRouters")
 app.use("/users", userRoutes)
 
-// =============================================== Coffee
-app.post("/coffee", (req, res) => {
-  try {
-    new Coffee({
-      name: req.body.name,
-      type: req.body.type,
-      sweetnessLevel: req.body.sweetnessLevel,
-      flavors: req.body.flavors,
-      descriptions: req.body.descriptions
-    })
-      .save()
-      .then(coffee => res.send({ message: `Coffee entered`, data: coffee }))
-  } catch (error) {
-    res.send(error)
-  }
-})
+// COFFEE ROUTE
+const coffeeRoutes = require("./routes/coffeeRouters")
+app.use("/coffee", coffeeRoutes)
 
-// ======================================================= users
-// app.get("/users", (req, res) => {
-//   Users.find().then(response => {
-//     res.send(response)
-//   })
+// =============================================== Coffee
+// app.post("/coffee", (req, res) => {
+//   try {
+//     new Coffee({
+//       name: req.body.name,
+//       type: req.body.type,
+//       sweetnessLevel: req.body.sweetnessLevel,
+//       flavors: req.body.flavors,
+//       descriptions: req.body.descriptions
+//     })
+//       .save()
+//       .then(coffee => res.send({ message: `Coffee entered`, data: coffee }))
+//   } catch (error) {
+//     res.send(error)
+//   }
 // })
 
 // ======================================================

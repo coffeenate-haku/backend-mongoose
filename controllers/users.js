@@ -11,7 +11,6 @@ const userControllers = {
   },
 
   // USER REGISTRATION
-
   register: (req, res) => {
     try {
       Users.findOne({ email: req.body.email }, (error, result) => {

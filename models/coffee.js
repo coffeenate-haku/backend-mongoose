@@ -5,7 +5,6 @@ const AutoIncrement = require("mongoose-sequence")(mongoose)
 //Define a Schema
 const CoffeeSchema = new Schema(
   {
-    _id: Schema.Types.ObjectId,
     name: String,
     type: String,
     sweetnessLevel: [String],
