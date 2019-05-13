@@ -73,35 +73,33 @@ app.post("/users/register", (req, res) => {
 app.post("/users/login", (req, res) => {
   try {
     Users.find({ email: req.body.email }, (error, result) => {
-      res.send(result)
+      if (error) {
+        res.send(error)
+      } else {
+        const validPassword = bcrypt.compare(req.body.password, result.password)
+
+        if (!validPassword) return res.send("password is not valid")
+
+        const token = jwt.sign(
+          {
+            id: result.id,
+            email: result.email
+          },
+          process.env.JWT_SECRET,
+          { expiresIn: "7d" }
+        )
+
+        res.send({
+          message: "You are logged in",
+          token: token,
+          user: result
+        })
+      }
     })
   } catch (error) {
     console.log(error)
   }
 })
-
-// if (userLogin === null) {
-//   return res.send("Your email is not registered")
-// }
-
-// // compare password from user input to password stored in database
-// const validPassword = bcrypt.compare(req.body.password, userLogin.password)
-// if (!validPassword) return res.send("Your password is not valid")
-
-// const token = jwt.sign(
-//   {
-//     id: userLogin.id,
-//     email: userLogin.email
-//   },
-//   process.env.JWT_SECRET,
-//   { expiresIn: "7d" }
-// )
-
-// res.send({
-//   message: "You are logged in",
-//   token: token,
-//   userID: userLogin.id
-// })
 
 // ======================================================
 app.listen(PORT, () => console.log(`app listening on port ${PORT}`))
