@@ -8,7 +8,15 @@ const UserSchema = new Schema(
     name: String,
     username: String,
     email: String,
-    password: String
+    password: String,
+    coffeePreferences: [
+      {
+        types: [String],
+        sweetnessLevel: [String],
+        flavors: [String],
+        coffeeRecomendations: { type: Schema.Types.ObjectId, ref: "Coffee" }
+      }
+    ]
   },
   {
     timestamps: true

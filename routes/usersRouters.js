@@ -10,4 +10,7 @@ router.post("/register", userController.register)
 // USER LOGIN
 router.post("/login", userController.login)
 
+// UPDATE USER DATA
+router.put("/:id", userController.addCoffeePreferences)
+
 module.exports = router

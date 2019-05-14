@@ -13,15 +13,18 @@ const userControllers = {
   // USER REGISTRATION
   register: (req, res) => {
     try {
+      // Check if the email entered has been registered or not, if it does stop the registration (else)
       Users.findOne({ email: req.body.email }, (error, result) => {
         if (error) {
           res.send(error)
         } else {
           if (result) return res.send("Email has been registered")
 
+          // encrypt the user password
           const salt = bcrypt.genSaltSync(7)
           req.body.password = bcrypt.hashSync(req.body.password, salt)
 
+          // register the user
           new Users({
             name: req.body.name,
             username: req.body.username,
@@ -43,20 +46,25 @@ const userControllers = {
   // USER LOGIN
   login: (req, res) => {
     try {
+      // Check if the email entered has been registered or not, if its not, stop the login (else)
       Users.findOne({ email: req.body.email }, async (error, result) => {
         if (error) {
           res.send(error)
         } else {
           if (result === null) return res.send("Your email is not registered")
 
+          // compare the encrypted password to the password in the database
           const validPassword = await bcrypt.compare(
             req.body.password,
             result.password
           )
 
+          // Stop the login process if the password doesn't match
           if (!validPassword) {
             return res.send("password is not valid")
-          } else {
+          }
+          // give the token if the password correct
+          else {
             const token = jwt.sign(
               {
                 id: result.id,
@@ -76,6 +84,33 @@ const userControllers = {
       })
     } catch (error) {
       console.log(error)
+    }
+  },
+
+  //ADD USER COFFEE PREFERENCES
+  addCoffeePreferences: (req, res) => {
+    try {
+      const query = { id: req.params.id }
+      const updateData = {
+        coffeePreferences: [
+          {
+            types: [req.body.types],
+            sweetnessLevel: [req.body.sweetnessLevel],
+            flavors: [req.body.flavors]
+          }
+        ]
+      }
+
+      Users.findOneAndUpdate(query, updateData, (error, result) => {
+        if (error) {
+          console.log(error)
+        } else {
+          res.send(result)
+        }
+      })
+    } catch (error) {
+      console.log(error)
+      res.send(error)
     }
   }
 }
