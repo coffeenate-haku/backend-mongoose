@@ -1,13 +1,16 @@
 const Users = require("../models/users")
+const Coffee = require("../models/coffee")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 
 const userControllers = {
   // GET ALL USERS DATA
   getAllUsers: (req, res) => {
-    Users.find().then(response => {
-      res.send(response)
-    })
+    Users.find()
+      .then(response => {
+        res.send(response)
+      })
+      .catch(error => res.send(error))
   },
 
   // USER REGISTRATION
@@ -85,34 +88,49 @@ const userControllers = {
     } catch (error) {
       console.log(error)
     }
-  },
+  }
 
   //ADD USER COFFEE PREFERENCES
-  addCoffeePreferences: (req, res) => {
-    try {
-      const query = { id: req.params.id }
-      const updateData = {
-        coffeePreferences: [
-          {
-            types: [req.body.types],
-            sweetnessLevel: [req.body.sweetnessLevel],
-            flavors: [req.body.flavors]
-          }
-        ]
-      }
+  // addCoffeePreferences: async (req, res) => {
+  //   try {
+  //     const recommendation = await Coffee.find(
+  //       { type: req.body.type } && {
+  //           sweetnessLevel: req.body.sweetnessLevel
+  //         } && { flavors: req.body.flavors },
+  //       (error, preferences) => {
+  //         if (error) {
+  //           return res.send(error)
+  //         }
 
-      Users.findOneAndUpdate(query, updateData, (error, result) => {
-        if (error) {
-          console.log(error)
-        } else {
-          res.send(result)
-        }
-      })
-    } catch (error) {
-      console.log(error)
-      res.send(error)
-    }
-  }
+  //         res.send(preferences)
+  //       }
+  //     )
+
+  //     console.log(recommendation)
+
+  //     // const query = { id: req.params.id }
+
+  //     // const updateData = {
+  //     //   $push: {
+  //     //     coffeePreferences: {
+  //     //       ...req.body.coffeePreferences,
+  //     //       coffeeRecommendation: [recommendation[0]._id]
+  //     //     }
+  //     //   }
+  //     // }
+
+  //     // Users.findOneAndUpdate(query, updateData, (error, result) => {
+  //     //   if (error) {
+  //     //     console.log(error)
+  //     //   } else {
+  //     //     res.send(result)
+  //     //   }
+  //     // })
+  //   } catch (error) {
+  //     console.log(error)
+  //     res.send(error)
+  //   }
+  // }
 }
 
 module.exports = userControllers
