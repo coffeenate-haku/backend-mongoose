@@ -144,14 +144,16 @@ const userControllers = {
     }
   },
 
-  getRecommendations: (req, res) => {
+  // Show Coffee Recommendations
+  showRecommendations: (req, res) => {
     Users.findOne({ id: req.params.id })
-      .populate("coffeePreferences.coffeeRecommendations", "-name")
+      .populate("coffeePreferences.coffeeRecommendations")
       .exec((error, result) => {
         if (error) {
           res.send(error)
         }
 
+        // res.send(result.coffeePreferences[0].coffeeRecommendations[0].name)
         res.send(result)
       })
   }

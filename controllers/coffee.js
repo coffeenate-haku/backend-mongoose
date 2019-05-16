@@ -13,10 +13,13 @@ const coffeeControllers = {
     try {
       new Coffee({
         name: req.body.name,
-        type: req.body.type,
-        sweetnessLevel: req.body.sweetnessLevel,
+        sugarLevel: req.body.sugarLevel,
+        bodyLevel: req.body.bodyLevel,
+        foamLevel: req.body.foamLevel,
+        milkLevel: req.body.milkLevel,
         flavors: req.body.flavors,
-        descriptions: req.body.descriptions
+        descriptions: req.body.descriptions,
+        image: req.body.image
       })
         .save()
         .then(coffee => res.send({ message: `Coffee entered`, data: coffee }))

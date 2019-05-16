@@ -1,10 +1,10 @@
 const router = require("express").Router()
-const coffeeController = require("../controllers/coffee")
+const coffeeControllers = require("../controllers/coffee")
 
 // GET ALL COFFEE DATA
-router.get("/", coffeeController.getAllCoffee)
+router.get("/", coffeeControllers.getAllCoffee)
 
 // REGISTER COFFEE DATA
-router.post("/", coffeeController.register)
+router.post("/", coffeeControllers.register)
 
 module.exports = router

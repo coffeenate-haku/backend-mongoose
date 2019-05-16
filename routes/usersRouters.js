@@ -3,7 +3,7 @@ const userController = require("../controllers/users")
 const helper = require("../helpers")
 
 // // GET ALL USERS DATA
-// router.get("/", userController.getAllUsers)
+router.get("/", helper.isAuthenticated, userController.getAllUsers)
 
 // GET ONE USERS DATA
 router.get("/:id", helper.isAuthenticated, userController.getOneUser)
@@ -21,6 +21,6 @@ router.put("/:id", helper.isAuthenticated, userController.addCoffeePreferences)
 router.get(
   "/recommendations/:id",
   helper.isAuthenticated,
-  userController.getRecommendations
+  userController.showRecommendations
 )
 module.exports = router

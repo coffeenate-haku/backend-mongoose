@@ -7,10 +7,13 @@ const CoffeeSchema = new Schema(
   {
     // _id: Schema.Types.ObjectId,
     name: String,
-    type: String,
-    sweetnessLevel: [String],
+    sugarLevel: [String],
+    bodyLevel: [Number],
+    foamLevel: [Number],
+    milkLevel: [Number],
     flavors: [String],
-    descriptions: String
+    descriptions: String,
+    image: String
   },
   {
     timestamps: true
