@@ -13,6 +13,15 @@ const userControllers = {
       .catch(error => res.send(error))
   },
 
+  // GET ONW USERS DATA
+  getOneUser: (req, res) => {
+    Users.findOne({ id: req.params.id })
+      .then(response => {
+        res.send(response)
+      })
+      .catch(error => res.send(error))
+  },
+
   // USER REGISTRATION
   register: (req, res) => {
     try {
@@ -41,7 +50,6 @@ const userControllers = {
         }
       })
     } catch (error) {
-      console.log(error)
       res.send(error)
     }
   },
@@ -86,51 +94,56 @@ const userControllers = {
         }
       })
     } catch (error) {
-      console.log(error)
+      res.send(error)
     }
-  }
+  },
 
   //ADD USER COFFEE PREFERENCES
-  // addCoffeePreferences: async (req, res) => {
-  //   try {
-  //     const recommendation = await Coffee.find(
-  //       { type: req.body.type } && {
-  //           sweetnessLevel: req.body.sweetnessLevel
-  //         } && { flavors: req.body.flavors },
-  //       (error, preferences) => {
-  //         if (error) {
-  //           return res.send(error)
-  //         }
+  addCoffeePreferences: async (req, res) => {
+    try {
+      // Get users answers
+      const types = req.body.types
+      const sweetnessLevels = req.body.sweetnessLevels
+      const flavors = req.body.flavors
 
-  //         res.send(preferences)
-  //       }
-  //     )
+      // Find cofee recommendation
+      const recommendations = await Coffee.find(
+        { type: req.body.type } && {
+            sweetnessLevel: req.body.sweetnessLevel
+          } && { flavors: req.body.flavors },
+        (error, preferences) => {
+          if (error) {
+            return res.send(error)
+          }
 
-  //     console.log(recommendation)
+          return preferences
+        }
+      )
 
-  //     // const query = { id: req.params.id }
+      const query = { id: req.params.id }
 
-  //     // const updateData = {
-  //     //   $push: {
-  //     //     coffeePreferences: {
-  //     //       ...req.body.coffeePreferences,
-  //     //       coffeeRecommendation: [recommendation[0]._id]
-  //     //     }
-  //     //   }
-  //     // }
+      const updateData = {
+        $push: {
+          coffeePreferences: {
+            types: types,
+            sweetnessLevels: sweetnessLevels,
+            flavors: flavors,
+            coffeeRecommendations: recommendations
+          }
+        }
+      }
 
-  //     // Users.findOneAndUpdate(query, updateData, (error, result) => {
-  //     //   if (error) {
-  //     //     console.log(error)
-  //     //   } else {
-  //     //     res.send(result)
-  //     //   }
-  //     // })
-  //   } catch (error) {
-  //     console.log(error)
-  //     res.send(error)
-  //   }
-  // }
+      await Users.findOneAndUpdate(query, updateData, (error, result) => {
+        if (error) {
+          res.send(error)
+        } else {
+          res.send(result)
+        }
+      })
+    } catch (error) {
+      res.send(error)
+    }
+  }
 }
 
 module.exports = userControllers
