@@ -101,10 +101,12 @@ const userControllers = {
   //ADD USER COFFEE PREFERENCES
   addCoffeePreferences: async (req, res) => {
     try {
-      // Find cofee recommendation
+      // Find coffee recommendation
       const recommendations = await Coffee.find(
-        { type: req.body.type } && {
-            sweetnessLevel: req.body.sweetnessLevel
+        { sugarLevel: req.body.sugarLevel } && {
+            bodyLevel: req.body.bodyLevel
+          } && { foamLevel: req.body.foamLevel } && {
+            milkLevel: req.body.milkLevel
           } && { flavors: req.body.flavors },
         ["_id"], //key apa yang mau diambil
         (error, preferences) => {

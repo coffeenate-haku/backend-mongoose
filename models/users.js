@@ -11,8 +11,10 @@ const UserSchema = new Schema(
     password: String,
     coffeePreferences: [
       {
-        types: [String],
-        sweetnessLevels: [String],
+        sugarLevel: [String],
+        bodyLevel: [Number],
+        foamLevel: [Number],
+        milkLevel: [Number],
         flavors: [String],
         coffeeRecommendations: [{ type: Schema.Types.ObjectId, ref: "Coffee" }]
       }
