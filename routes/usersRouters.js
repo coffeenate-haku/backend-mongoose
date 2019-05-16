@@ -14,7 +14,13 @@ router.post("/register", userController.register)
 // USER LOGIN
 router.post("/login", userController.login)
 
-// ADD USER COFFEE PREFERENCES
+// ADD USERS's COFFEE PREFERENCES
 router.put("/:id", helper.isAuthenticated, userController.addCoffeePreferences)
 
+// GET COFFEE RECOMMENDATIONS
+router.get(
+  "/recommendations/:id",
+  helper.isAuthenticated,
+  userController.getRecommendations
+)
 module.exports = router

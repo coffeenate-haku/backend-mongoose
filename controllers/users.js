@@ -101,11 +101,6 @@ const userControllers = {
   //ADD USER COFFEE PREFERENCES
   addCoffeePreferences: async (req, res) => {
     try {
-      // Get users answers
-      // const types = req.body.types
-      // const sweetnessLevels = req.body.sweetnessLevels
-      // const flavors = req.body.flavors
-
       // Find cofee recommendation
       const recommendations = await Coffee.find(
         { type: req.body.type } && {
@@ -147,6 +142,18 @@ const userControllers = {
     } catch (error) {
       res.send(error)
     }
+  },
+
+  getRecommendations: (req, res) => {
+    Users.findOne({ id: req.params.id })
+      .populate("coffeeRecommendations")
+      .exec((error, result) => {
+        if (error) {
+          res.send(error)
+        }
+
+        res.send(result)
+      })
   }
 }
 
