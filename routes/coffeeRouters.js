@@ -5,6 +5,6 @@ const coffeeController = require("../controllers/coffee")
 router.get("/", coffeeController.getAllCoffee)
 
 // REGISTER COFFEE DATA
-router.post("/register", coffeeController.register)
+router.post("/", coffeeController.register)
 
 module.exports = router
