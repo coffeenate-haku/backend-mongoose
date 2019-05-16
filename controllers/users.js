@@ -1,16 +1,16 @@
-const Users = require("../models/users")
-const Coffee = require("../models/coffee")
-const bcrypt = require("bcryptjs")
-const jwt = require("jsonwebtoken")
+const Users = require("../models/users");
+const Coffee = require("../models/coffee");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const userControllers = {
   // GET ALL USERS DATA
   getAllUsers: (req, res) => {
     Users.find()
       .then(response => {
-        res.send(response)
+        res.send(response);
       })
-      .catch(error => res.send(error))
+      .catch(error => res.send(error));
   },
 
   // USER REGISTRATION
@@ -19,13 +19,13 @@ const userControllers = {
       // Check if the email entered has been registered or not, if it does stop the registration (else)
       Users.findOne({ email: req.body.email }, (error, result) => {
         if (error) {
-          res.send(error)
+          res.send(error);
         } else {
-          if (result) return res.send("Email has been registered")
+          if (result) return res.send("Email has been registered");
 
           // encrypt the user password
-          const salt = bcrypt.genSaltSync(7)
-          req.body.password = bcrypt.hashSync(req.body.password, salt)
+          const salt = bcrypt.genSaltSync(7);
+          req.body.password = bcrypt.hashSync(req.body.password, salt);
 
           // register the user
           new Users({
@@ -37,12 +37,12 @@ const userControllers = {
             .save()
             .then(newUser =>
               res.send({ message: `Data entered`, data: newUser })
-            )
+            );
         }
-      })
+      });
     } catch (error) {
-      console.log(error)
-      res.send(error)
+      console.log(error);
+      res.send(error);
     }
   },
 
@@ -52,19 +52,19 @@ const userControllers = {
       // Check if the email entered has been registered or not, if its not, stop the login (else)
       Users.findOne({ email: req.body.email }, async (error, result) => {
         if (error) {
-          res.send(error)
+          res.send(error);
         } else {
-          if (result === null) return res.send("Your email is not registered")
+          if (result === null) return res.send("Your email is not registered");
 
           // compare the encrypted password to the password in the database
           const validPassword = await bcrypt.compare(
             req.body.password,
             result.password
-          )
+          );
 
           // Stop the login process if the password doesn't match
           if (!validPassword) {
-            return res.send("password is not valid")
+            return res.send("password is not valid");
           }
           // give the token if the password correct
           else {
@@ -75,62 +75,66 @@ const userControllers = {
               },
               process.env.JWT_SECRET,
               { expiresIn: "7d" }
-            )
+            );
 
             res.send({
               message: "You are logged in",
               token: token,
               user: result
-            })
+            });
           }
         }
-      })
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  },
 
   //ADD USER COFFEE PREFERENCES
-  // addCoffeePreferences: async (req, res) => {
-  //   try {
-  //     const recommendation = await Coffee.find(
-  //       { type: req.body.type } && {
-  //           sweetnessLevel: req.body.sweetnessLevel
-  //         } && { flavors: req.body.flavors },
-  //       (error, preferences) => {
-  //         if (error) {
-  //           return res.send(error)
-  //         }
+  addCoffeePreferences: async (req, res) => {
+    try {
+      const recommendation = await Coffee.find(
+        { type: req.body.type } && {
+            sweetnessLevel: req.body.sweetnessLevel
+          } && { flavors: req.body.flavors },
+        ["_id"],
+        (error, preferences) => {
+          if (error) {
+            return res.send(error);
+          }
 
-  //         res.send(preferences)
-  //       }
-  //     )
+          return preferences;
+        }
+      );
 
-  //     console.log(recommendation)
+      const query = { id: req.params.id };
 
-  //     // const query = { id: req.params.id }
+      const updateData = {
+        $push: {
+          coffeePreferences: {
+            ...req.body,
+            coffeeRecommendation: recommendation
+          }
+        }
+      };
 
-  //     // const updateData = {
-  //     //   $push: {
-  //     //     coffeePreferences: {
-  //     //       ...req.body.coffeePreferences,
-  //     //       coffeeRecommendation: [recommendation[0]._id]
-  //     //     }
-  //     //   }
-  //     // }
+      Users.findOneAndUpdate(
+        query,
+        updateData,
+        { new: true },
+        (error, result) => {
+          if (error) {
+            console.log(error);
+          } else {
+            res.send(result);
+          }
+        }
+      );
+    } catch (error) {
+      console.log(error);
+      res.send(error);
+    }
+  }
+};
 
-  //     // Users.findOneAndUpdate(query, updateData, (error, result) => {
-  //     //   if (error) {
-  //     //     console.log(error)
-  //     //   } else {
-  //     //     res.send(result)
-  //     //   }
-  //     // })
-  //   } catch (error) {
-  //     console.log(error)
-  //     res.send(error)
-  //   }
-  // }
-}
-
-module.exports = userControllers
+module.exports = userControllers;
