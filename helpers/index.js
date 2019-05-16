@@ -13,9 +13,7 @@ module.exports = {
     // 2. Verify token
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET)
-      console.log(decoded)
       const user = await Users.findOne({ id: decoded.id })
-      console.log(user)
 
       if (user === null) {
         return res.send("Account not found")

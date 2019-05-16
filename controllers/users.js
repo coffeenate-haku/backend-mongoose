@@ -13,7 +13,7 @@ const userControllers = {
       .catch(error => res.send(error))
   },
 
-  // GET ONW USERS DATA
+  // GET ONE USERS DATA
   getOneUser: (req, res) => {
     Users.findOne({ id: req.params.id })
       .then(response => {
@@ -102,15 +102,16 @@ const userControllers = {
   addCoffeePreferences: async (req, res) => {
     try {
       // Get users answers
-      const types = req.body.types
-      const sweetnessLevels = req.body.sweetnessLevels
-      const flavors = req.body.flavors
+      // const types = req.body.types
+      // const sweetnessLevels = req.body.sweetnessLevels
+      // const flavors = req.body.flavors
 
       // Find cofee recommendation
       const recommendations = await Coffee.find(
         { type: req.body.type } && {
             sweetnessLevel: req.body.sweetnessLevel
           } && { flavors: req.body.flavors },
+        ["_id"], //key apa yang mau diambil
         (error, preferences) => {
           if (error) {
             return res.send(error)
@@ -125,21 +126,24 @@ const userControllers = {
       const updateData = {
         $push: {
           coffeePreferences: {
-            types: types,
-            sweetnessLevels: sweetnessLevels,
-            flavors: flavors,
+            ...req.body,
             coffeeRecommendations: recommendations
           }
         }
       }
 
-      await Users.findOneAndUpdate(query, updateData, (error, result) => {
-        if (error) {
-          res.send(error)
-        } else {
-          res.send(result)
+      Users.findOneAndUpdate(
+        query,
+        updateData,
+        { new: true }, //tampilakan data yang terbaru setelah diupdate
+        (error, result) => {
+          if (error) {
+            res.send(error)
+          } else {
+            res.send(result)
+          }
         }
-      })
+      )
     } catch (error) {
       res.send(error)
     }

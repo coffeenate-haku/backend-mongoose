@@ -14,7 +14,7 @@ const UserSchema = new Schema(
         types: [String],
         sweetnessLevels: [String],
         flavors: [String],
-        coffeeRecommendations: [Object]
+        coffeeRecommendations: [{ type: Schema.Types.ObjectId, ref: "Coffee" }]
       }
     ]
   },
