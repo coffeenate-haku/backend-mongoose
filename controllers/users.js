@@ -154,7 +154,7 @@ const userControllers = {
       .populate("coffeePreferences.coffeeRecommendations")
       .exec((error, result) => {
         if (error) {
-          res.send(error)
+          return res.send(error)
         }
         const coffeeRecommendations = result.coffeePreferences
           .reduce(
