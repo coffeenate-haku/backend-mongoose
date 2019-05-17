@@ -150,7 +150,7 @@ const userControllers = {
 
   // Show Coffee Recommendations
   showRecommendations: (req, res) => {
-    Users.findOne({ id: req.params.id })
+    Users.findOne({ id: parseInt(req.params.id) })
       .populate("coffeePreferences.coffeeRecommendations")
       .exec((error, result) => {
         if (error) {
