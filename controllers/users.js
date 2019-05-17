@@ -150,15 +150,26 @@ const userControllers = {
 
   // Show Coffee Recommendations
   showRecommendations: (req, res) => {
-    Users.findOne({ id: parseInt(req.params.id) })
+    Users.findOne({ id: req.params.id })
       .populate("coffeePreferences.coffeeRecommendations")
       .exec((error, result) => {
         if (error) {
           res.send(error)
         }
+        const coffeeRecommendations = result.coffeePreferences
+          .reduce(
+            (arr, preferences) => [
+              ...arr,
+              ...preferences.coffeeRecommendations
+            ],
+            []
+          )
+          .map(recommendation => {
+            const { name, descriptions, image } = recommendation
 
-        // res.send(result.coffeePreferences[0].coffeeRecommendations[0].name)
-        res.send(result)
+            return { name, descriptions, image }
+          })
+        res.send(coffeeRecommendations)
       })
   }
 }
