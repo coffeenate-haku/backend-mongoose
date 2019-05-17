@@ -13,6 +13,7 @@ const coffeeControllers = {
     try {
       new Coffee({
         name: req.body.name,
+        hotCold: req.body.hotCold,
         sugarLevel: req.body.sugarLevel,
         bodyLevel: req.body.bodyLevel,
         foamLevel: req.body.foamLevel,

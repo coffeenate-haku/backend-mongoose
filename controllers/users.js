@@ -103,7 +103,9 @@ const userControllers = {
     try {
       // Find coffee recommendation
       const recommendations = await Coffee.find(
-        { sugarLevel: req.body.sugarLevel } && {
+        { hotCold: req.body.hotCold } && {
+            sugarLevel: req.body.sugarLevel
+          } && {
             bodyLevel: req.body.bodyLevel
           } && { foamLevel: req.body.foamLevel } && {
             milkLevel: req.body.milkLevel

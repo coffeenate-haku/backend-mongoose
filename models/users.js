@@ -11,6 +11,7 @@ const UserSchema = new Schema(
     password: String,
     coffeePreferences: [
       {
+        hotCold: [String],
         sugarLevel: [String],
         bodyLevel: [Number],
         foamLevel: [Number],

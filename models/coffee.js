@@ -7,6 +7,7 @@ const CoffeeSchema = new Schema(
   {
     // _id: Schema.Types.ObjectId,
     name: String,
+    hotCold: [String],
     sugarLevel: [String],
     bodyLevel: [Number],
     foamLevel: [Number],
